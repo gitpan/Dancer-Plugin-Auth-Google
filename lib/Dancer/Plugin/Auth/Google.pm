@@ -2,7 +2,7 @@ package Dancer::Plugin::Auth::Google;
 use strict;
 use warnings;
 
-our $VERSION = 0.01;
+our $VERSION = 0.02;
 
 use Dancer ':syntax';
 use Dancer::Plugin;
@@ -120,11 +120,11 @@ Dancer::Plugin::Auth::Google - Authenticate with Google
     use Dancer ':syntax';
     use Dancer::Plugin::Auth::Google;
 
-    auth_google_init;
+    auth_google_init;  # <-- don't forget to call this first!
 
     before sub {
-        redirect auth_google_authenticate_url
-            unless session('google_user');
+        return unless request->path_info !~ m{^/auth/google/callback};
+        redirect auth_google_authenticate_url unless session('google_user');
     };
 
     get '/' => sub {
@@ -150,25 +150,48 @@ In order for this plugin to work, you need the following:
 
 =over 4
 
+=item * Session backend
+
+For the authentication process to work, B<you need a session backend> so the plugin
+can store the authenticated user's information.
+
+Use the session backend of your choice, it doesn't make a difference, see
+L<Dancer::Session> for details about supported session engines, or search the CPAN
+for new ones.
+
 =item * Google Application
 
 Anyone with a valid Google account can register an application. Go to
-[http://console.developers.google.com], then select a project or create
+L<http://console.developers.google.com>, then select a project or create
 a new one. After that, in the sidebar on the left, select "Credentials"
 under the "APIs and auth" option. In the "OAuth" section of that page,
-select **Create New Client ID**. A dialog will appear.
+select B<Create New Client ID>. A dialog will appear.
+
+=for HTML
+<img src="https://raw.githubusercontent.com/garu/Dancer-Plugin-Auth-Google/master/share/create-new-id.png">
 
 In the "Application type" section of the dialog, make sure you select
 "Web application". In the "Authorized JavaScript origins" field, make
 sure you put the domains of both your development server and your
 production one (e.g.: http://localhost:3000 and http://mywebsite.com).
-Same thing goes for the "Redirect URIs": those **MUST** be the same
+Same thing goes for the "Redirect URIs": those B<**MUST**> be the same
 as you will set in your app and Google won't redirect to any page that
 is not listed (don't worry, you can edit this later too).
 
+=for HTML
+<img src="https://raw.githubusercontent.com/garu/Dancer-Plugin-Auth-Google/master/share/authorized-uris.png">
+
 Again, make sure the "Redirect URIs" contains both your development
-url (e.g. http://localhost:3000/auth/google/callback) and production
-(e.g. http://mycoolwebsite.com/auth/google/callback).
+url (e.g. C<http://localhost:3000/auth/google/callback>) and production
+(e.g. C<http://mycoolwebsite.com/auth/google/callback>).
+
+After you're finished, copy the "Client ID" and "Client Secret" data
+of your newly created app. It should be listed on that same panel
+(you can check it anytime by going to the "Credentials" option under
+"APIs & auth":
+
+=for HTML
+<img src="https://raw.githubusercontent.com/garu/Dancer-Plugin-Auth-Google/master/share/client-id.png">
 
 =item * Configuration
 
@@ -192,7 +215,32 @@ Of those, only "client_id", "client_secret" and "callback_url" are mandatory.
 If you omit the other ones, they will assume their default values, as listed
 above.
 
-See L<https://developers.google.com/+/api/oauth#login-scopes> for available
+Specifically, it is a good practice to change the C<callback_url> depending on
+whether you're on a development or production environment. Dancer makes this
+easier for you by letting you split your settings, leaving the basic plugin
+settings on C<config.yml> and specific C<callback_url> definitions on
+C<environments/development.yml> and C<environments/production.yml>:
+
+    # environments/development.yml
+    plugins:
+        'Auth::Google':
+            callback_url:   'http://localhost:3000/auth/google/callback'
+
+And
+
+    # environments/production.yml
+    plugins:
+        'Auth::Google':
+            callback_url:   'http://myproductionserver.com/auth/google/callback'
+
+=back
+
+=head3 Setting your permissions' scope
+
+Since this plugin is meant mainly for authentication, the default scope
+is 'profile'. That should give you general profile data for the user, such
+as full name, id, profile url, etc. See
+L<https://developers.google.com/+/api/oauth#login-scopes> for available
 scopes to chose from. You can set as many as you like, separated by space.
 A usual combination is 'profile email'. If you want a Google-specific scope
 (i.e. those with a "." in the name) make sure you add the full URL as
@@ -200,16 +248,6 @@ specified in the document above. For example, the proper way to ask for a
 user's social features is not "plus.login", but
 "https://www.googleapis.com/auth/plus.login".
 
-=item * Session backend
-
-For the authentication process to work, you need a session backend so the plugin
-can store the authenticated user's information.
-
-Use the session backend of your choice, it doesn't make a difference, see
-Dancer::Session for details about supported session engines, or search the CPAN
-for new ones.
-
-=back
 
 =head1 EXPORTS
 

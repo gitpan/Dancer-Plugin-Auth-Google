@@ -3,27 +3,27 @@ abstract: 'Authenticate with Google'
 author:
   - 'Breno G. de Oliveira <garu@cpan.org>'
 build_requires:
-  ExtUtils::MakeMaker: '0'
+  ExtUtils::MakeMaker: 0
 configure_requires:
-  ExtUtils::MakeMaker: '0'
+  ExtUtils::MakeMaker: 0
 dynamic_config: 1
-generated_by: 'ExtUtils::MakeMaker version 6.92, CPAN::Meta::Converter version 2.133380'
+generated_by: 'ExtUtils::MakeMaker version 6.94, CPAN::Meta::Converter version 2.120351'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: '1.4'
+  version: 1.4
 name: Dancer-Plugin-Auth-Google
 no_index:
   directory:
     - t
     - inc
 requires:
-  Carp: '0'
-  Dancer: '0'
-  Furl: '0'
-  IO::Socket::SSL: '0'
-  Test::More: '0'
-  URI: '0'
+  Carp: 0
+  Dancer: 0
+  Furl: 0
+  IO::Socket::SSL: 0
+  Test::More: 0
+  URI: 0
 resources:
   repository: http://github.com/garu/Dancer-Plugin-Auth-Google
-version: 0.01
+version: 0.02
