@@ -32,7 +32,7 @@ Prerequisites
 
 In order for this plugin to work, you need the following:
 
-* Session backend
+### Session backend ###
 
 For the authentication process to work, **you need a session backend** so the plugin
 can store the authenticated user's information.
@@ -41,7 +41,7 @@ Use the session backend of your choice, it doesn't make a difference, see
 [Dancer::Session](https://metacpan.org/pod/Dancer::Session) for details
 about supported session engines, or search the CPAN for new ones.
 
-* Google Application
+### Google Application ###
 
 Anyone with a valid Google account can register an application. Go to
 http://console.developers.google.com, then select a project or create
@@ -72,7 +72,7 @@ of your newly created app. It should be listed on that same panel
 
 ![screenshot for client id](https://raw.githubusercontent.com/garu/Dancer-Plugin-Auth-Google/master/share/client-id.png)
 
-* Configuration
+### Configuration ###
 
 After you set up your app, you need to configure this plugin. To do
 that, copy the "Client ID" and "Client Secret" generated on the
@@ -130,8 +130,6 @@ A usual combination is 'profile email'. If you want a Google-specific scope
 specified in the document above. For example, the proper way to ask for a
 user's social features is not "plus.login", but
 "https://www.googleapis.com/auth/plus.login".
-
-
 
 
 ### Installation ###

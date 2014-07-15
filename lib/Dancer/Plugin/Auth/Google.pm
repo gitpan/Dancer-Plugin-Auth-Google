@@ -2,7 +2,7 @@ package Dancer::Plugin::Auth::Google;
 use strict;
 use warnings;
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 use Dancer ':syntax';
 use Dancer::Plugin;
@@ -98,9 +98,18 @@ get '/auth/google/callback' => sub {
     my $user = from_json($res->decoded_content);
 
     # we need to stringify our JSON::Bool data as some
-    # session backends might have trouble storing objects
-    foreach my $k (keys %$user) {
-        $user->{$k} = "$user->{$k}" if Scalar::Util::blessed($user->{$k});
+    # session backends might have trouble storing objects.
+    # we should be able to safely remove this once
+    # https://github.com/PerlDancer/Dancer-Session-Cookie/pull/1
+    # (or a similar solution) is merged.
+    if (exists $user->{image} and exists $user->{image}{isDefault}) {
+        $user->{image}{isDefault} = "$user->{image}{isDefault}";
+    }
+    if (exists $user->{isPlusUser}) {
+        $user->{isPlusUser} = "$user->{isPlusUser}";
+    }
+    if (exists $user->{verified}) {
+        $user->{verified} = "$user->{verified}";
     }
 
     session 'google_user' => { %$data, %$user };
@@ -148,9 +157,7 @@ the authenticated user to your session when done.
 
 In order for this plugin to work, you need the following:
 
-=over 4
-
-=item * Session backend
+=head2 Session backend
 
 For the authentication process to work, B<you need a session backend> so the plugin
 can store the authenticated user's information.
@@ -159,7 +166,7 @@ Use the session backend of your choice, it doesn't make a difference, see
 L<Dancer::Session> for details about supported session engines, or search the CPAN
 for new ones.
 
-=item * Google Application
+=head2 Google Application
 
 Anyone with a valid Google account can register an application. Go to
 L<http://console.developers.google.com>, then select a project or create
@@ -168,7 +175,7 @@ under the "APIs and auth" option. In the "OAuth" section of that page,
 select B<Create New Client ID>. A dialog will appear.
 
 =for HTML
-<img src="https://raw.githubusercontent.com/garu/Dancer-Plugin-Auth-Google/master/share/create-new-id.png">
+<p><img src="https://raw.githubusercontent.com/garu/Dancer-Plugin-Auth-Google/master/share/create-new-id.png"></p>
 
 In the "Application type" section of the dialog, make sure you select
 "Web application". In the "Authorized JavaScript origins" field, make
@@ -179,7 +186,7 @@ as you will set in your app and Google won't redirect to any page that
 is not listed (don't worry, you can edit this later too).
 
 =for HTML
-<img src="https://raw.githubusercontent.com/garu/Dancer-Plugin-Auth-Google/master/share/authorized-uris.png">
+<p><img src="https://raw.githubusercontent.com/garu/Dancer-Plugin-Auth-Google/master/share/authorized-uris.png"></p>
 
 Again, make sure the "Redirect URIs" contains both your development
 url (e.g. C<http://localhost:3000/auth/google/callback>) and production
@@ -191,9 +198,9 @@ of your newly created app. It should be listed on that same panel
 "APIs & auth":
 
 =for HTML
-<img src="https://raw.githubusercontent.com/garu/Dancer-Plugin-Auth-Google/master/share/client-id.png">
+<p><img src="https://raw.githubusercontent.com/garu/Dancer-Plugin-Auth-Google/master/share/client-id.png"></p>
 
-=item * Configuration
+=head2 Configuration
 
 After you set up your app, you need to configure this plugin. To do
 that, copy the "Client ID" and "Client Secret" generated on the
@@ -233,7 +240,6 @@ And
         'Auth::Google':
             callback_url:   'http://myproductionserver.com/auth/google/callback'
 
-=back
 
 =head3 Setting your permissions' scope
 

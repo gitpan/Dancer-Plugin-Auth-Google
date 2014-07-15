@@ -26,4 +26,4 @@ requires:
   URI: 0
 resources:
   repository: http://github.com/garu/Dancer-Plugin-Auth-Google
-version: 0.02
+version: 0.03
