@@ -37,6 +37,7 @@
             "Furl" : "0",
             "IO::Socket::SSL" : "0",
             "Test::More" : "0",
+            "Try::Tiny" : "0",
             "URI" : "0"
          }
       }
@@ -47,5 +48,5 @@
          "url" : "http://github.com/garu/Dancer-Plugin-Auth-Google"
       }
    },
-   "version" : 0.04
+   "version" : 0.05
 }

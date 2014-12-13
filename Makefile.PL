@@ -16,6 +16,7 @@ WriteMakefile(
         'Carp'            => 0,
         'URI'             => 0,
         'Test::More'      => 0,
+        'Try::Tiny'       => 0,
     },
     META_MERGE => {
         resources => {
