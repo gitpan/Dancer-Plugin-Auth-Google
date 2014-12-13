@@ -1,5 +1,8 @@
 Revision history for Dancer-Plugin-Auth-Google
 
+0.04    2014-12-12
+    - improved error handling.
+
 0.03    2014-07-15
     - workaround for JSON::bool objects being
       stored in the session, until Dancer::Session::Cookie

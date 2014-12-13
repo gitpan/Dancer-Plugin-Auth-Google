@@ -4,7 +4,7 @@
       "Breno G. de Oliveira <garu@cpan.org>"
    ],
    "dynamic_config" : 1,
-   "generated_by" : "ExtUtils::MakeMaker version 6.94, CPAN::Meta::Converter version 2.120351",
+   "generated_by" : "ExtUtils::MakeMaker version 7.02, CPAN::Meta::Converter version 2.142690",
    "license" : [
       "perl_5"
    ],
@@ -47,5 +47,5 @@
          "url" : "http://github.com/garu/Dancer-Plugin-Auth-Google"
       }
    },
-   "version" : "0.03"
+   "version" : 0.04
 }

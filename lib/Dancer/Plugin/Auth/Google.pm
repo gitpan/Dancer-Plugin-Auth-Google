@@ -2,12 +2,13 @@ package Dancer::Plugin::Auth::Google;
 use strict;
 use warnings;
 
-our $VERSION = 0.03;
+our $VERSION = 0.04;
 
 use Dancer ':syntax';
 use Dancer::Plugin;
 use Carp ();
 use Scalar::Util;
+use Try::Tiny;
 
 use Furl;
 use IO::Socket::SSL;
@@ -86,7 +87,9 @@ get '/auth/google/callback' => sub {
             grant_type    => 'authorization_code',
         }
     );
-    my $data = from_json($res->decoded_content);
+
+    my ($data, $error) = _parse_response( $res->decoded_content );
+    return send_error($error) if $error;
 
     return send_error 'google auth: no access token present'
         unless $data->{access_token};
@@ -95,7 +98,10 @@ get '/auth/google/callback' => sub {
         'https://www.googleapis.com/plus/v1/people/me',
         [ 'Authorization' => 'Bearer ' . $data->{access_token} ],
     );
-    my $user = from_json($res->decoded_content);
+
+    my $user;
+    ($user, $error)  = _parse_response( $res->decoded_content );
+    return send_error($error) if $error;
 
     # we need to stringify our JSON::Bool data as some
     # session backends might have trouble storing objects.
@@ -115,6 +121,23 @@ get '/auth/google/callback' => sub {
     session 'google_user' => { %$data, %$user };
     redirect $callback_success;
 };
+
+sub _parse_response {
+    my ($response) = @_;
+    my ($data, $error);
+
+    try {
+        $data = from_json($response);
+    } catch {
+        if ($response =~ /timeout/) {
+            $error = "google auth: timeout ($response)";
+        }
+        else {
+            $error = "google auth: error parsing JSON ($_)";
+        }
+    };
+    return ($data, $error);
+}
 
 register_plugin;
 __END__
