@@ -1,6 +1,10 @@
 Dancer-Plugin-Auth-Google
 =========================
 
+[![Build status](https://api.travis-ci.org/garu/Dancer-Plugin-Auth-Google.png)](https://api.travis-ci.org/garu/Dancer-Plugin-Auth-Google.png)
+[![Coverage status](https://coveralls.io/repos/garu/Dancer-Plugin-Auth-Google/badge.png)](https://coveralls.io/r/garu/Dancer-Plugin-Auth-Google)
+[![CPAN version](https://badge.fury.io/pl/Dancer-Plugin-Auth-Google.png)](http://badge.fury.io/pl/Dancer-Plugin-Auth-Google)
+
 This plugin provides a simple way to authenticate your users through Google's
 OAuth API. It provides you with a helper to build easily a redirect to the
 authentication URI, defines automatically a callback route handler and saves

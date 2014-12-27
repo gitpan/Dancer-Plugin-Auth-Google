@@ -1,5 +1,8 @@
 Revision history for Dancer-Plugin-Auth-Google
 
+0.06    2014-12-27
+    - added missing prereq.
+
 0.05    2014-12-12
     - added missing prereq.
 

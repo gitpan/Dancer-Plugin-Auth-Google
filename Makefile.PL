@@ -10,6 +10,7 @@ WriteMakefile(
     LICENSE             => 'perl',
     PL_FILES            => {},
     PREREQ_PM => {
+        'JSON'            => 0,
         'Dancer'          => 0,
         'Furl'            => 0,
         'IO::Socket::SSL' => 0,
